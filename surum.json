@@ -1,12 +1,17 @@
 {
- "ver": "1.6.0",
- "date": "2026-10-15",
- "notes": "deneme",
+ "ver": "1.7.0",
+ "date": "2026-10-16",
+ "notes": "",
  "files": [
   {
    "n": "enex-baslat.ps1",
-   "sha256": "db5793b2bca6d956b9dbfbaf71e2d58baafd23e4438c39aabc8955dcc05039b3",
-   "size": 11439
+   "sha256": "8ab75cbbde79cf9446be0facc47ad27b2f1725937bc99449ba13cce1681892f5",
+   "size": 11751
+  },
+  {
+   "n": "enex-desktop.js",
+   "sha256": "3779e3ee146c37b7e4e939334ec4eeec5f874fb66d22622f7974c8d7ccfa0f79",
+   "size": 21103
   },
   {
    "n": "enex-guncelleme.ps1",
@@ -14,10 +19,20 @@
    "size": 6634
   },
   {
+   "n": "EnexHizmet.cs",
+   "sha256": "52af154ff433f12ba41cdc7b3bbac31bd3fe2a412e425c839af17d20c952dc2e",
+   "size": 23174
+  },
+  {
+   "n": "enex-hizmet.ps1",
+   "sha256": "0e054d23de9db3d49ca5794529c7ca931abab01af742df640bb612fe745d1a64",
+   "size": 836
+  },
+  {
    "n": "index.html",
-   "sha256": "17cac8f6febfa027f784a74a6a4a54e5e606a149cbf81c9c6d821d08402a6ade",
-   "size": 1398058
+   "sha256": "99058c18bda6665b221fa3d8ea44d3632bf9c99ba047f3ebf154d7b769d2de5f",
+   "size": 1407689
   }
  ],
- "sig": "yO4pbvhaQ7m3TNg96eR2gOelMDsr4DKkvC8VPxrSaLMXcnUdVs_HPB6NYGhSlSVExrdl4PsXoWZjK4C-j9zlPQ"
+ "sig": "RXpYcdL-k-mKxoSAJrQwT3guWug5Rm6FGHz-VU7PZgEQWiewxRMXy-g-sXKKFPWM3Mu703y4xBxnoJteJUDCuA"
 }

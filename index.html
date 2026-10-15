@@ -468,28 +468,29 @@ body.yon .yside{background:var(--bg);padding:8px;border:0;box-shadow:none}
 @media (max-width:1250px){.sale{grid-template-columns:minmax(0,1fr) 370px 330px}.sale .lcd .tot{font-size:54px}.sale .paycol .pbtn{font-size:13px;min-height:56px;padding:10px 6px}}
 @media (max-width:1000px){.sale{grid-template-columns:1fr}.sale .paycol{position:static}}
 @media print{.paycol,.midcol{display:none}}
-.sale .midcol .paymain{grid-template-columns:1fr 1fr;gap:8px}
-.sale .midcol .paymain .pbtn{min-height:62px;font-size:17px;justify-content:center}
-.sale .midcol .paymain .p-split{grid-column:span 2;flex-direction:column;font-size:19px;min-height:64px}
+.sale .paymain{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#v-sale .paymain .pbtn{min-height:62px;font-size:17px;justify-content:center}
+#v-sale .paymain .p-split{grid-column:span 2;flex-direction:column;font-size:19px;min-height:64px}
 /* sepet: küçük, tek satır ürün adları */
 #cartBody td{white-space:nowrap;font-size:14px;padding-top:7px;padding-bottom:7px}
 #cartBody td:nth-child(2){font-size:12px}
 #cartBody td:nth-child(3){font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis}
 #cartBody td:nth-child(3) b{font-weight:500}
 .sale .paycol{display:flex;flex-direction:column;gap:10px}
-.sale .paycol .pad{gap:8px}.sale .paycol .pad button{padding:13px 0;font-size:22px}
+.sale .pad{gap:8px}.sale .pad button{padding:13px 0;font-size:22px}
 .sale .lcd .tot{white-space:nowrap;word-break:normal;overflow:hidden;letter-spacing:-2px}
 #cartBody td:nth-child(3){max-width:1px;width:100%}
 #cartBody td,.cartwrap th{padding-left:6px;padding-right:6px}
 #cartBody .qbtn{width:24px;height:24px;font-size:13px}
-/* orta sütun: ödeme butonları alta kadar uzar, ayrı renk */
+/* orta sütun: tuş takımı alta kadar uzar; ödeme butonları (Nakit / Kart / Ödeme Al) sağ sütunun altında, ayrı renk */
 .sale .midcol{height:calc(100vh - 68px);min-height:620px;position:sticky;top:6px}
-.sale .midcol .paymain{flex:1 1 auto;grid-template-rows:1fr 1fr;min-height:220px}
-.sale .midcol .paymain .pbtn{min-height:0;height:100%;font-size:24px;gap:6px}
-.sale .midcol .paymain .pbtn small{font-size:13px}
-.sale .midcol .paymain .p-split{font-size:28px}
-#v-sale .midcol .paymain .pbtn{background:#2a6f57!important}
-#v-sale .midcol .paymain .pbtn:hover:not(:disabled){background:#215a46!important}
+.sale .padbox{flex:1 1 auto;min-height:0;display:flex}.sale .padbox .pad{flex:1 1 auto;min-height:0;grid-auto-rows:minmax(0,1fr)}.sale .padbox .pad button{font-size:26px;min-height:0}
+.sale .paymain{flex:0 0 auto;grid-template-rows:1fr 1fr;min-height:200px}
+#v-sale .paymain .pbtn{min-height:0;height:100%;font-size:24px;gap:6px}
+#v-sale .paymain .pbtn small{font-size:13px}
+#v-sale .paymain .p-split{font-size:28px}
+#v-sale .paymain .pbtn{background:#2a6f57!important}
+#v-sale .paymain .pbtn:hover:not(:disabled){background:#215a46!important}
 .lastrec-l{border-top:1px solid var(--line);padding:6px 12px;font-size:13px;max-height:130px;overflow:auto}.lastrec-l .chg{font-size:17px;font-weight:800;color:var(--cash)}
 /* ürün bilgisi: ince ve küçük, tek sıra */
 #pinfo{padding:7px 10px;font-size:12px}
@@ -950,7 +951,7 @@ body.hasdock #toast{bottom:52px}
         <button data-v="prod">Ürün Kartları</button>
         <button data-v="ybir">Ürün Birimleri</button>
         <button data-v="yimp">Excel'den Ürün / Fiyat Aktar</button>
-        <button data-v="ypr">Otomatik Fiyatlandırma</button>
+        <button data-v="ypr" data-mod="fiyat">Otomatik Fiyatlandırma</button>
         <button data-v="yet">Etiket Yazdır</button>
         <button data-v="ykg">Kısayol Grupları</button>
         <button data-v="ysc">Terazi Entegrasyonu</button>
@@ -1067,10 +1068,13 @@ body.hasdock #toast{bottom:52px}
           <div class="fx" id="lcdFx" title="Döviz kurlarını düzenlemek için tıklayın"></div>
         </div>
         <div class="box info" id="pinfo"></div>
-        <div class="pay paymain">
-          <button class="pbtn p-split" id="btnSplit">ÖDEME AL<small>Nakit + Kart + Bölünmüş kart · End</small></button>
-          <button class="pbtn p-cash" id="payCash">NAKİT<small>F1</small></button>
-          <button class="pbtn p-card" id="payCard">KREDİ KARTI<small>F2</small></button>
+        <div class="box padbox">
+          <div class="pad" id="pad">
+            <button>7</button><button>8</button><button>9</button><button data-k="bs">⌫</button>
+            <button>4</button><button>5</button><button>6</button><button data-k="x">×</button>
+            <button>1</button><button>2</button><button>3</button><button class="ent" data-k="ent">GİR</button>
+            <button>0</button><button>00</button><button>,</button>
+          </div>
         </div>
       </div>
 
@@ -1090,13 +1094,10 @@ body.hasdock #toast{bottom:52px}
           <div><div class="muted" style="font-size:12px">MÜŞTERİ</div><div class="cn" id="custName">Perakende Müşteri</div></div>
           <div style="display:flex;gap:6px"><button class="btn sm" id="custPick">Seç (F4)</button><button class="btn sm" id="custClear" hidden>Kaldır</button></div>
         </div>
-        <div class="box">
-          <div class="pad" id="pad">
-            <button>7</button><button>8</button><button>9</button><button data-k="bs">⌫</button>
-            <button>4</button><button>5</button><button>6</button><button data-k="x">×</button>
-            <button>1</button><button>2</button><button>3</button><button class="ent" data-k="ent">GİR</button>
-            <button>0</button><button>00</button><button>,</button>
-          </div>
+        <div class="paymain">
+          <button class="pbtn p-split" id="btnSplit">ÖDEME AL<small>Nakit + Kart + Bölünmüş kart · End</small></button>
+          <button class="pbtn p-cash" id="payCash">NAKİT<small>F1</small></button>
+          <button class="pbtn p-card" id="payCard">KREDİ KARTI<small>F2</small></button>
         </div>
       </div>
     </div>
@@ -1253,7 +1254,7 @@ body.hasdock #toast{bottom:52px}
     <div class="muted" style="font-size:13px;margin:-4px 0 10px">Her ürün kategorisi için alış (geliş) fiyatı üzerine eklenecek kâr oranını ve yuvarlamayı belirle. Program satış fiyatlarını alış fiyatlarından hesaplar; önizlemeyi kontrol edip uygularsın. Alış fiyatları KDV dahil olarak alınır.</div>
     <div class="box sec"><div class="tbl" id="yprCats"></div>
       <label class="sw" style="padding-left:0;padding-right:0"><span><b>Sadece fiyat artışı yap</b><small>Açıkken hesaplanan fiyat mevcut fiyattan düşükse fiyata dokunulmaz (kampanyalı / bilerek ucuz satılan ürünler korunur).</small></span><span class="tg"><input type="checkbox" id="yprUp"><span></span></span></label>
-      <label class="sw" style="padding-left:0;padding-right:0;border-bottom:0"><span><b>Alış fiyatı değişince satış fiyatını otomatik güncelle</b><small>Açıkken alış faturası, alış fişi, e-fatura veya stok girişiyle yeni alış fiyatı geldiğinde satış fiyatı kategori oranına göre hemen yeniden hesaplanır (zam gelen ürün kasaya yeni fiyatıyla düşer).</small></span><span class="tg"><input type="checkbox" id="yprAuto"><span></span></span></label></div>
+      <div class="muted" style="font-size:12.5px;padding:10px 0 2px;line-height:1.5"><b>Otomatik fiyat</b> her kategoride ve her alt kategoride ayrı açılır ve varsayılan olarak <b>kapalıdır</b>. Açık olan kategoride alış faturası, alış fişi, e-fatura veya stok girişiyle yeni alış fiyatı gelince satış fiyatı o kategorinin kâr oranına göre kendiliğinden güncellenir. Kapalı kategorilerde fiyatlar yalnızca sizin elinizle değişir; isterseniz yukarıdaki <b>Toplu fiyatlandırma</b> ile önizleyip uygularsınız.</div></div>
     <div class="box sec" style="margin-top:10px" id="yprPrev"></div>
   </section>
   <section class="view" id="v-ya"><div class="ybar"><h2>Alış Faturaları (Gelen)</h2><input id="yaQ" placeholder="Fatura no, tedarikçi, ürün"><select id="yaM"><option value="ay">Bu ay</option><option value="gay">Geçen ay</option><option value="yil">Bu yıl</option><option value="tum">Tümü</option></select><button class="btn pri" id="yaNew">Yeni Alış Faturası</button></div><div id="yaBody"></div></section>
@@ -1326,20 +1327,20 @@ body.hasdock #toast{bottom:52px}
   .sale>.box>.quick{max-height:22vh;overflow:auto}
   .sale .lcd{padding:clamp(8px,1.6vh,22px) 20px}
   .sale .lcd .tot{font-size:clamp(34px,8.5vh,68px);margin:clamp(2px,.8vh,12px) 0}
-  .sale .midcol .paymain{min-height:0;grid-template-rows:minmax(0,1.8fr) minmax(0,1fr)}
-  .sale .midcol .paymain .p-split{order:3;font-size:clamp(14px,2.4vh,20px)!important;min-height:0}
-  .sale .midcol .paymain .p-split small{font-size:clamp(9px,1.3vh,12px)}
-  .sale .midcol .paymain .pbtn{font-size:clamp(15px,3vh,24px);padding:6px}
-  .sale .midcol .paymain .p-split{font-size:clamp(17px,3.4vh,28px)}
-  .sale .midcol .paymain .pbtn small{font-size:clamp(10px,1.5vh,13px)}
+  .sale .paymain{flex:0 0 36%;min-height:0;grid-template-rows:minmax(0,1.8fr) minmax(0,1fr)}
+  #v-sale .paymain .p-split{order:3;font-size:clamp(14px,2.4vh,20px)!important;min-height:0}
+  #v-sale .paymain .p-split small{font-size:clamp(9px,1.3vh,12px)}
+  #v-sale .paymain .pbtn{font-size:clamp(15px,3vh,24px);padding:6px}
+  #v-sale .paymain .p-split{font-size:clamp(17px,3.4vh,28px)}
+  #v-sale .paymain .pbtn small{font-size:clamp(10px,1.5vh,13px)}
   .sale .paycol{display:flex;flex-direction:column;gap:8px}
   .sale .paycol>.pay{flex:1 1 auto;min-height:0;grid-auto-rows:minmax(0,1fr)}
   .sale .paycol .pbtn{min-height:0;height:100%;padding:4px 6px;font-size:clamp(11px,1.9vh,15px);line-height:1.15}
   .sale .paycol .pbtn small{font-size:clamp(9px,1.3vh,11px)}
   .sale .paycol .custline{flex:none;padding:5px 12px}
-  .sale .paycol>.box:last-child{flex:1 1 auto;min-height:0;display:flex}
-  .sale .paycol .pad{flex:1 1 auto;grid-auto-rows:minmax(0,1fr);gap:6px;padding:6px}
-  .sale .paycol .pad button{padding:0;min-height:0;font-size:clamp(14px,2.6vh,22px)}
+  .sale .padbox{flex:1 1 auto;min-height:0;display:flex}
+  .sale .pad{flex:1 1 auto;min-height:0;grid-auto-rows:minmax(0,1fr);gap:6px;padding:6px}
+  .sale .pad button{padding:0;min-height:0;font-size:clamp(16px,3.2vh,28px)}
 }
 @media (min-width:1001px) and (max-height:760px){
   .sale>.box>.keys{display:none}
@@ -4258,11 +4259,12 @@ function reportData() {
     const ck = catOfItem(it) || "_none"; const cb = catB[ck] || (catB[ck] = {id: ck, name: ck === "_none" ? "Kategorisiz" : catName(ck), adet: 0, a: 0, fis: new Set()});
     cb.adet += it.u === "kg" ? 1 : it.q; cb.a += a; cb.fis.add(r.id);
   }
-  const payCash = r2(pays.filter(p => !p.avans && p.method === "nakit").reduce((s, p) => s + p.amt, 0));
-  const payCard = r2(pays.filter(p => !p.avans && p.method === "kart").reduce((s, p) => s + p.amt, 0));
+  const payCash = r2(pays.filter(p => !p.avans && !p.gider && p.method === "nakit").reduce((s, p) => s + p.amt, 0));
+  const giderCash = r2(-pays.filter(p => p.gider && p.method === "nakit").reduce((s, p) => s + (+p.amt || 0), 0));   // kasadan yapılan ödemeler (ödeme planı vb.)
+  const payCard = r2(pays.filter(p => !p.avans && !p.gider && p.method === "kart").reduce((s, p) => s + p.amt, 0));
   const avCash = r2(pays.filter(p => p.avans && p.method === "nakit").reduce((s, p) => s + p.amt, 0)), avCard = r2(pays.filter(p => p.avans && p.method === "kart").reduce((s, p) => s + p.amt, 0));
   const cats = Object.values(catB).map(c => ({id: c.id, name: c.name, adet: c.adet, a: r2(c.a), fis: c.fis.size})).sort((x, y) => (x.id === "_none") - (y.id === "_none") || y.a - x.a);
-  return {cats, recs, pays, ok, rets, retN, retTotal, total: sum(), cash: r2(sum("nakit") + avCash), card: r2(sum("kart") + avCard), credit: sum("veresiye"), vatB, top: Object.values(top).sort((a, b) => b.a - a.a), payCash, payCard, avCash, avCard, avN: pays.filter(p => p.avans).length};
+  return {cats, recs, pays, ok, rets, retN, retTotal, total: sum(), cash: r2(sum("nakit") + avCash), card: r2(sum("kart") + avCard), credit: sum("veresiye"), vatB, top: Object.values(top).sort((a, b) => b.a - a.a), payCash, payCard, giderCash, avCash, avCard, avN: pays.filter(p => p.avans).length};
 }
 /* gün sonu: periyot bazlı (varsayılan) ya da gün / tarih aralığı; bölümler tek satıra katlanabilir */
 const REP_SECS = [["tum", "Tümü"], ["ozet", "Özet (TL)"], ["odeme", "Ödeme / POS"], ["kat", "Kategori"], ["urun", "Satılan ürünler"], ["iade", "İadeler"], ["kasiyer", "Kasiyer"], ["saat", "Saatlik"], ["indirim", "İndirim / İptal"], ["kdv", "KDV"], ["fis", "Fişler"], ["tahsil", "Cari tahsilat"], ["stok", "Azalan stok"]];
@@ -4322,8 +4324,9 @@ function renderReport() {
         + row(`<span style="color:var(--card);font-weight:700">Kart</span>${cm ? ` <span class="muted" style="font-size:12px">(komisyon ${fmt(cm)} · net ${fmt(r2(R.card - cm))})</span>` : ""}`, fmt(R.card), pct(R.card, R.total))
         + row(`<span style="color:var(--credit);font-weight:700">Cari (veresiye)</span>`, fmt(R.credit), pct(R.credit, R.total))
         + (R.payCash || R.payCard ? row("Cari tahsilat", fmt(r2(R.payCash + R.payCard)), `<span class="muted" style="font-size:12px">N ${fmt(R.payCash)} · K ${fmt(R.payCard)}</span>`) : "")
+        + (R.giderCash ? row("Kasadan ödemeler (ödeme planı)", `<span style="color:var(--danger)">−${fmt(R.giderCash)}</span>`, null) : "")
         + (dev ? row("Açılış nakdi (devir)", fmt(dev), null) : "")
-        + tot("Kasada olması gereken nakit", fmt(r2(R.cash + R.payCash + dev))), "")}</div></div>`; })()],
+        + tot("Kasada olması gereken nakit", fmt(r2(R.cash + R.payCash - (R.giderCash || 0) + dev))), "")}</div></div>`; })()],
     odeme: ["Ödeme türü ve POS", `${X.pos.length} POS · kart ${fmt(R.card)}`, `<div class="grid2" style="margin:0"><div>${tbl(`<th>Ödeme türü</th><th class="num">Tutar</th><th class="num">Pay</th>`,
       [["Nakit", R.cash], ["Kredi / banka kartı", R.card], ["Cari (veresiye)", R.credit]].map(([k, v]) => `<tr><td>${k}</td><td class="num">${fmt(v)}</td><td class="num">${pct(v, R.total)}</td></tr>`).join("") + `<tr style="font-weight:800"><td>Toplam</td><td class="num">${fmt(R.total)}</td><td></td></tr>`, "")}</div>
       <div>${tbl(`<th>Banka / POS</th><th class="num">İşlem</th><th class="num">Tutar</th><th class="num">Komisyon</th>`, X.pos.map(p => `<tr><td>${esc(p.n)}</td><td class="num">${p.c}</td><td class="num">${fmt(p.a)}</td><td class="num">${fmt(p.comm)}${p.est ? ` <span class="muted" title="Sözleşmeden tahmin">~</span>` : ""}</td></tr>`).join(""), "Kartlı satış yok")}</div></div>`],
@@ -4703,7 +4706,7 @@ function listModal() {
         <div><span>Kredi Kartı</span><b>${tl(R.card)}</b></div>
         <div><span>Cari</span><b>${tl(R.credit)}</b></div>
         <div><span>Cari Tahsilat</span><b>${tl(r2(R.payCash + R.payCard))}</b></div>
-        <div style="border-color:var(--cash)"><span>Kasadaki Nakit</span><b>${tl(r2(R.cash + R.payCash))}</b></div>
+        <div style="border-color:var(--cash)"><span>Kasadaki Nakit</span><b>${tl(r2(R.cash + R.payCash - (R.giderCash || 0)))}</b>${R.giderCash ? `<div class="muted" style="font-size:12px">${fmt(R.giderCash)} kasadan ödeme düşüldü</div>` : ""}</div>
       </div>
       <div class="ltools">
         <div class="seg" id="lTab"><button data-t="sales">Satışlar (${R.recs.length})</button><button data-t="pays">Tahsilatlar (${R.pays.length})</button></div>
@@ -4927,7 +4930,7 @@ async function stockMove(type, p, q, extra = {}) {
   if (wh || whHas()) { m.wh = wh || WH_MAIN; m.whn = whName(wh); }
   const patch = {stock: after};
   if (extra.setCost > 0) { patch.cost = r2(extra.setCost); patch.lastBuyAt = Date.now(); }
-  if (extra.setCost > 0 && pcfg().auto) {   // alış fiyatı değişti → kategori oranına göre satış fiyatı
+  if (extra.setCost > 0 && autoOn(cur)) {   // alış fiyatı değişti → yalnızca otomatik fiyatlandırması açık kategoride satış fiyatı yeniden hesaplanır
     const np = calcPrice(cur, patch.cost), op = +cur.price || 0;
     if (np && Math.abs(np - op) >= 0.005 && (!pcfg().onlyUp || np > op)) { patch.price = np; patch.oldPrice = op; patch.priceAt = Date.now(); repriceLog.push({n: cur.name || p.name, o: op, p: np}); }
   }
@@ -5102,7 +5105,8 @@ function renderSvc(k) {
 }
 
 /* =================== AYARLAR VE MODÜLLER (Yönetim › Ayarlar › Görünüm ve Modüller) =================== */
-const modOn = k => (S.rules.mods || {})[k] !== false;   // skt · siparis · kampanya (varsayılan açık, ayarlardan kapatılabilir)
+const MOD_OFF0 = {fiyat: true};   // varsayılanı KAPALI olan modüller (yönetici Ayarlar'dan açar)
+const modOn = k => MOD_OFF0[k] ? (S.rules.mods || {})[k] === true : (S.rules.mods || {})[k] !== false;   // skt · siparis · kampanya · fiyat (otomatik fiyatlandırma) (varsayılan açık, ayarlardan kapatılabilir)
 const ruleNum = (k, d) => { const v = +S.rules[k]; return isFinite(v) && v > 0 ? v : d; };
 const admSet = (k, v, what, after) => { const go = async () => { await setRule(k, v); if (after) after(); renderYon(); }; return isAdmin() ? go() : needAdmin(what || "Bu ayarı değiştirmeyi", go); };
 const NOTIF_T = {stok: "Kritik stoğa düşen ürün", gunsonu: "Gün sonu özeti (periyot kapanınca)", iptal: "Fiş iptali / düzeltme", iade: "Ürün iadesi", limit: "Cari limiti aşıldı", evrak: "Çek / senet vadesi yaklaştı", yedek: "Otomatik yedek alınamadı", terazi: "Terazili ürün: fiyat değişti / alış belgesi geldi", etiket: "Raf etiketi: fiyatı değişen ürün hatırlatması", plan: "Ödeme planı: vadesi gelen / geciken ödeme"};
@@ -5119,7 +5123,8 @@ function renderYset() {
       <div class="sw sub" ${M0.skt === false ? "hidden" : ""}><span><b>Kaç gün kala uyarılsın</b></span><input id="mdSktD" type="number" min="1" max="90" value="${ruleNum("sktDays", 7)}" style="max-width:90px"></div>
       ${sw("mdOrd", M0.siparis !== false, "Otomatik sipariş önerisi", "Satış hızına ve stoğa göre tedarikçi bazında sipariş listesi hazırlar.")}
       <div class="sw sub" ${M0.siparis === false ? "hidden" : ""}><span><b>Kaç günlük stok hedeflensin</b><small>Satış hızı son ${ruleNum("ordDays", 30)} güne göre hesaplanır</small></span><span style="display:flex;gap:6px"><input id="mdOrdC" type="number" min="1" max="60" value="${ruleNum("ordCover", 7)}" style="max-width:80px" title="hedef gün"><input id="mdOrdD" type="number" min="7" max="90" value="${ruleNum("ordDays", 30)}" style="max-width:80px" title="hesap için son kaç gün"></span></div>
-      ${sw("mdKmp", M0.kampanya !== false, "Kampanya ve promosyonlar", "3 al 2 öde, 2. ürün indirimi, sepet indirimi, saatli kategori indirimi kasada otomatik uygulanır.")}</div>
+      ${sw("mdKmp", M0.kampanya !== false, "Kampanya ve promosyonlar", "3 al 2 öde, 2. ürün indirimi, sepet indirimi, saatli kategori indirimi kasada otomatik uygulanır.")}
+      ${sw("mdPr", M0.fiyat === true, "Otomatik fiyatlandırma", "Kapalıyken hiçbir kategoride satış fiyatı kendiliğinden değişmez ve menüdeki sayfa gizlenir. Açıkken her kategori ve alt grup Yönetim › Otomatik Fiyatlandırma sayfasındaki kendi “Otomatik fiyat” kutusuyla çalışır. Oranlar ve seçimler silinmez.")}</div>
     <div class="box sec" style="max-width:980px;margin-top:10px"><h3>Kasa kapanışı</h3>
       ${sw("ccReq", !!S.rules.cashReq, "Periyot bitirirken nakit sayımı zorunlu", "Kasadaki nakit sayılmadan periyot kapatılamaz. Sayım küpür küpür (200 ₺, 100 ₺ …) yapılabilir.")}
       <div class="sw"><span><b>Kasa farkı uyarı sınırı (₺)</b><small>Fark bu tutarı aşarsa kapanışta açıklama istenir ve bildirim gönderilir</small></span><input id="ccWarn" inputmode="decimal" value="${fmt(ruleNum("cashWarn", 50))}" style="max-width:110px"></div></div>
@@ -5137,7 +5142,7 @@ function renderYset() {
   $("#nightSw").onchange = e => setNight(e.target.checked);
   $("#skinL").onclick = e => { const b = e.target.closest("[data-skin]"); if (!b) return; const id = b.dataset.skin; if (!nightOn()) applySkin(id); admSet("skin", id, "Temayı değiştirmeyi", () => toast(`Tema: ${SKINS.find(s => s.id === id).t}`, "ok")); };
   const modSet = (k, v) => admSet("mods", Object.assign({}, S.rules.mods || {}, {[k]: v}), "Modül ayarını değiştirmeyi");
-  $("#mdSkt").onchange = e => modSet("skt", e.target.checked); $("#mdOrd").onchange = e => modSet("siparis", e.target.checked); $("#mdKmp").onchange = e => modSet("kampanya", e.target.checked);
+  $("#mdSkt").onchange = e => modSet("skt", e.target.checked); $("#mdOrd").onchange = e => modSet("siparis", e.target.checked); $("#mdKmp").onchange = e => modSet("kampanya", e.target.checked); $("#mdPr").onchange = e => modSet("fiyat", e.target.checked);
   $("#mdSktD").onchange = e => admSet("sktDays", Math.max(1, Math.min(90, parseInt(e.target.value) || 7)));
   $("#mdOrdC").onchange = e => admSet("ordCover", Math.max(1, Math.min(60, parseInt(e.target.value) || 7)));
   $("#mdOrdD").onchange = e => admSet("ordDays", Math.max(7, Math.min(90, parseInt(e.target.value) || 30)));
@@ -8302,12 +8307,17 @@ async function eAutoRun() {
 /* =================== OTOMATİK FİYATLANDIRMA (kategori kâr oranı) =================== */
 const ROUNDS = [["", "Yuvarlama yok"], ["0.05", "0,05 ₺"], ["0.1", "0,10 ₺"], ["0.25", "0,25 ₺"], ["0.5", "0,50 ₺"], ["1", "1 ₺ (tam lira)"], ["90", ",90 ile bitsin"], ["99", ",99 ile bitsin"], ["5", "5 ₺"]];
 const PR_SUGG = [[/sigara|tütün|tutun/, {fixed: true}], [/ekmek|fırın|firin/, {fixed: true}], [/alkol|bira|rakı|raki|şarap|sarap/, {m: 15}], [/içecek|icecek|meşrubat|su\b/, {m: 25}], [/manav|meyve|sebze/, {m: 35}], [/temizlik|deterjan/, {m: 25}], [/kişisel|kisisel|bakım|bakim|kozmetik/, {m: 30}], [/atıştırmalık|atistirmalik|çikolata|cikolata|bisküvi|biskuvi|cips/, {m: 30}], [/şarküteri|sarkuteri|peynir|et\b/, {m: 25}], [/gıda|gida|bakliyat|kahvaltı|kahvalti/, {m: 20}]];
-const pcfg = () => Object.assign({cats: {}, onlyUp: true, auto: false}, S.rules.pricing || {});
+let prPend = null;   // kaydedilmeyi bekleyen fiyatlandırma ayarı: veritabanından gelen eski kopya bunu ezmesin
+const pcfg = () => Object.assign({cats: {}, onlyUp: true, auto: false}, prPend || S.rules.pricing || {});
 const pcat = p => catName(p.cat) ? p.cat : "_none";
 // geçerli kural: alt kategorinin kendi oranı yoksa üst kategorinin oranı kullanılır
 const hasRule = x => !!(x && (x.fixed || +x.m > 0));
-const ruleCatId = p => { const k = pcat(p), cats = pcfg().cats; if (hasRule(cats[k])) return k; const pa = k !== "_none" ? catParent(k) : null; return pa && hasRule(cats[pa]) ? pa : k; };
+// alt kategoriye yalnızca üstün KÂR ORANI geçer; üst kategorinin "Sabit" seçimi alt gruplara geçmez (alt grup kendi ayarıyla çalışır)
+const hasRate = x => !!(x && !x.fixed && +x.m > 0);
+const ruleCatId = p => { const k = pcat(p), cats = pcfg().cats; if (hasRule(cats[k])) return k; const pa = k !== "_none" ? catParent(k) : null; return pa && hasRate(cats[pa]) ? pa : k; };
 const ruleOf = p => pcfg().cats[ruleCatId(p)];
+// kategori bazlı otomatik fiyatlandırma: varsayılan KAPALI; yalnızca yöneticinin açtığı kategorilerde alış fiyatı değişince satış fiyatı güncellenir
+const autoOn = p => { if (!modOn("fiyat")) return false; const own = pcfg().cats[pcat(p)], x = ruleOf(p); return !!(own && own.auto && x && !x.fixed && +x.m > 0); };   // her kategori ve alt kategori kendi anahtarına bakar; oran yoksa üst kategorinin oranı kullanılır
 function roundPrice(v, r) {
   if (!(v > 0)) return 0;
   if (r === "90" || r === "99") { const e = r === "90" ? 0.9 : 0.99, n = Math.floor(v); return r2(n + e >= v - 1e-9 ? n + e : n + 1 + e); }
@@ -8334,14 +8344,14 @@ function renderPricing() {
   const byCat = {}; for (const r of allRows) (byCat[ruleCatId(r.p)] = byCat[ruleCatId(r.p)] || []).push(r);
   if (prCat !== "*" && !cats.some(c => c.id === prCat)) prCat = "*";
   const stat = {}; for (const p of prods) { const k = pcat(p), o = stat[k] || (stat[k] = {n: 0, nc: 0, mk: 0, mn: 0}); o.n++; if (+p.cost > 0) { o.nc++; if (+p.price > 0) { o.mk += (p.price - p.cost) / p.cost * 100; o.mn++; } } }
-  $("#yprCats").innerHTML = `<table><thead><tr><th>Kategori</th><th class="num">Ürün</th><th class="num">Şu anki ort. kâr</th><th style="width:150px">Kâr oranı (maliyet üzerine)</th><th style="width:170px">Yuvarlama</th><th style="width:120px">Fiyata dokunma</th><th style="width:190px">Toplu fiyatlandırma</th></tr></thead><tbody>
-    ${cats.map(c => { const s2 = stat[c.id] || {n: 0, nc: 0, mk: 0, mn: 0}, x = cfg.cats[c.id] || {}; return `<tr data-c="${esc(c.id)}"><td style="${c.sub ? "padding-left:22px" : ""}">${c.sub ? `<span class="muted">└</span> ${esc(c.name.split(" › ").pop())}` : `<b>${esc(c.name)}</b>`}${c.sub && !hasRule(x) && hasRule(cfg.cats[catParent(c.id)]) ? `<div class="muted" style="font-size:11px">üst kategorinin oranı geçerli</div>` : ""}</td><td class="num">${s2.n}${s2.n - s2.nc ? `<div class="muted" style="font-size:11px">${s2.n - s2.nc} maliyetsiz</div>` : ""}</td>
+  $("#yprCats").innerHTML = `<table><thead><tr><th>Kategori</th><th style="width:118px" title="Açıkken bu kategorideki ürünlerin alış fiyatı değişince satış fiyatı kâr oranına göre kendiliğinden güncellenir">Otomatik fiyat</th><th class="num">Ürün</th><th class="num">Şu anki ort. kâr</th><th style="width:150px">Kâr oranı (maliyet üzerine)</th><th style="width:170px">Yuvarlama</th><th style="width:120px">Fiyata dokunma</th><th style="width:190px">Toplu fiyatlandırma</th></tr></thead><tbody>
+    ${cats.map(c => { const s2 = stat[c.id] || {n: 0, nc: 0, mk: 0, mn: 0}, x = cfg.cats[c.id] || {}; return `<tr data-c="${esc(c.id)}"><td style="${c.sub ? "padding-left:22px" : ""}">${c.sub ? `<span class="muted">└</span> ${esc(c.name.split(" › ").pop())}` : `<b>${esc(c.name)}</b>`}${c.sub && !hasRule(x) && hasRate(cfg.cats[catParent(c.id)]) ? `<div class="muted" style="font-size:11px">üst kategorinin oranı geçerli</div>` : ""}</td><td>${(() => { const pa = c.sub ? cfg.cats[catParent(c.id)] : null, eff = hasRule(x) ? x : (pa && hasRate(pa) ? pa : null), inh = eff && eff !== x; const dis = !eff || !!eff.fixed || !(+eff.m > 0), on = !!x.auto && !dis; return `<label style="display:flex;gap:6px;align-items:center;${dis ? "opacity:.5" : ""}" title="${eff && eff.fixed ? "Sabit fiyatlı kategoride otomatik fiyat kullanılmaz" : !eff ? "Önce kâr oranı girin" : "Alış fiyatı değişince satış fiyatı otomatik güncellensin"}"><input type="checkbox" data-k="auto" style="width:auto" ${on ? "checked" : ""} ${dis ? "disabled" : ""}> ${on ? "<b>Açık</b>" : "Kapalı"}</label>${inh && !dis ? `<div class="muted" style="font-size:11px">üst kategorinin %${fq(eff.m)} oranıyla</div>` : ""}`; })()}</td><td class="num">${s2.n}${s2.n - s2.nc ? `<div class="muted" style="font-size:11px">${s2.n - s2.nc} maliyetsiz</div>` : ""}</td>
       <td class="num">${s2.mn ? "%" + fq(Math.round(s2.mk / s2.mn * 10) / 10) : "—"}</td>
-      <td><div style="display:flex;align-items:center;gap:4px"><span>%</span><input data-k="m" inputmode="decimal" value="${x.m != null && x.m !== "" ? fq(x.m) : ""}" placeholder="${c.sub && !hasRule(x) && cfg.cats[catParent(c.id)] && +cfg.cats[catParent(c.id)].m > 0 ? fq(cfg.cats[catParent(c.id)].m) + " (üst)" : "—"}" ${x.fixed ? "disabled" : ""} style="text-align:right;padding:5px 8px"></div>${+x.m > 0 ? `<div class="muted" style="font-size:11px">brüt marj %${fq(Math.round(x.m / (100 + +x.m) * 1000) / 10)}</div>` : ""}</td>
+      <td><div style="display:flex;align-items:center;gap:4px"><span>%</span><input data-k="m" inputmode="decimal" value="${x.m != null && x.m !== "" ? fq(x.m) : ""}" placeholder="${c.sub && !hasRule(x) && hasRate(cfg.cats[catParent(c.id)]) ? fq(cfg.cats[catParent(c.id)].m) + " (üst)" : "—"}" ${x.fixed ? "disabled" : ""} style="text-align:right;padding:5px 8px"></div>${+x.m > 0 ? `<div class="muted" style="font-size:11px">brüt marj %${fq(Math.round(x.m / (100 + +x.m) * 1000) / 10)}</div>` : ""}</td>
       <td><select data-k="r" ${x.fixed ? "disabled" : ""} style="padding:5px">${ROUNDS.map(([v, t]) => `<option value="${v}" ${(x.r || "") === v ? "selected" : ""}>${t}</option>`).join("")}</select></td>
       <td><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" data-k="fixed" style="width:auto" ${x.fixed ? "checked" : ""}> Sabit</label></td>
-      <td style="white-space:nowrap">${(byCat[c.id] || []).length ? `<button class="btn sm pri" data-ap="${esc(c.id)}">${(byCat[c.id] || []).length} ürünü fiyatla</button> <button class="btn sm" data-see="${esc(c.id)}">Gör</button>` : `<span class="muted" style="font-size:12px">${x.fixed ? "Sabit fiyat" : +x.m > 0 ? (s2.n ? "Fiyatlar güncel" : (c.top && catKids(c.id).length ? "Alt kategorilerle birlikte güncel" : "Ürün yok")) : c.sub && hasRule(cfg.cats[catParent(c.id)]) ? "Üst kategoriyle fiyatlanır" : "Oran girilmedi"}</span>`}</td></tr>`; }).join("")}</tbody></table>`;
-  $("#yprUp").checked = cfg.onlyUp; $("#yprAuto").checked = cfg.auto;
+      <td style="white-space:nowrap">${(byCat[c.id] || []).length ? `<button class="btn sm pri" data-ap="${esc(c.id)}">${(byCat[c.id] || []).length} ürünü fiyatla</button> <button class="btn sm" data-see="${esc(c.id)}">Gör</button>` : `<span class="muted" style="font-size:12px">${x.fixed ? "Sabit fiyat" : +x.m > 0 ? (s2.n ? "Fiyatlar güncel" : (c.top && catKids(c.id).length ? "Alt kategorilerle birlikte güncel" : "Ürün yok")) : c.sub && hasRate(cfg.cats[catParent(c.id)]) ? "Üst kategoriyle fiyatlanır" : "Oran girilmedi"}</span>`}</td></tr>`; }).join("")}</tbody></table>`;
+  $("#yprUp").checked = cfg.onlyUp;
   // önizleme (kategori seçilebilir)
   const rows = prCat === "*" ? allRows.slice() : (byCat[prCat] || []).slice();
   rows.sort((a, b) => (b.np - b.op) / (b.op || 1) - (a.np - a.op) / (a.op || 1));
@@ -8373,7 +8383,7 @@ function applyPricing(sel, catLabel) {
   }
 }
 let prT = null;
-function savePricing(mut) { const c = pcfg(); c.cats = Object.assign({}, c.cats); mut(c); S.rules = Object.assign({}, S.rules, {pricing: c}); clearTimeout(prT); prT = setTimeout(() => setRule("pricing", pcfg()), 500); }
+function savePricing(mut) { const c = pcfg(); c.cats = Object.assign({}, c.cats); mut(c); prPend = c; S.rules = Object.assign({}, S.rules, {pricing: c}); clearTimeout(prT); prT = setTimeout(async () => { const v = prPend; if (!v) return; try { await setRule("pricing", v); } finally { if (prPend === v) prPend = null; } }, 500); }
 
 /* =================== POS CİHAZI ENTEGRASYONU =================== */
 // Akış: kasa bir "posreq" (ödeme isteği) kaydı açar → aracı program (veya test simülatörü) cihazda çekimi yapıp
@@ -8821,12 +8831,13 @@ function perStats(P) {
   const recs = R.recs.filter(inP), ok = recs.filter(r => !r.void), pays = R.pays.filter(inP);
   const sm = (L, m) => r2(L.reduce((a, r) => a + (m ? partSum(r, m) : (+r.total || 0)), 0));
   const sales = ok.filter(r => !r.ret), rets = ok.filter(r => r.ret);
-  const payCash = r2(pays.filter(p => !p.avans && p.method === "nakit").reduce((a, p) => a + (+p.amt || 0), 0));
-  const payCard = r2(pays.filter(p => !p.avans && p.method === "kart").reduce((a, p) => a + (+p.amt || 0), 0));
+  const payCash = r2(pays.filter(p => !p.avans && !p.gider && p.method === "nakit").reduce((a, p) => a + (+p.amt || 0), 0));
+  const giderCash = r2(-pays.filter(p => p.gider && p.method === "nakit").reduce((a, p) => a + (+p.amt || 0), 0));
+  const payCard = r2(pays.filter(p => !p.avans && !p.gider && p.method === "kart").reduce((a, p) => a + (+p.amt || 0), 0));
   const avCash = r2(pays.filter(p => p.avans && p.method === "nakit").reduce((a, p) => a + (+p.amt || 0), 0)), avCard = r2(pays.filter(p => p.avans && p.method === "kart").reduce((a, p) => a + (+p.amt || 0), 0));
   const cashStart = r2(+(P && P.cashStart) || 0), cash = r2(sm(ok, "nakit") + avCash);
   return {n: sales.length, nRet: rets.length, nVoid: recs.length - ok.length, sales: sm(sales), ret: sm(rets), total: sm(ok),
-    cash, card: r2(sm(ok, "kart") + avCard), credit: sm(ok, "veresiye"), payCash, payCard, avCash, avCard, cashStart, expCash: r2(cashStart + cash + payCash)};
+    cash, card: r2(sm(ok, "kart") + avCard), credit: sm(ok, "veresiye"), payCash, payCard, giderCash, avCash, avCard, cashStart, expCash: r2(cashStart + cash + payCash - giderCash)};
 }
 function perTable(st) {
   const row = (k, v, x = "") => `<tr><td>${k}</td><td ${x}>${v}</td></tr>`;
@@ -8837,6 +8848,7 @@ function perTable(st) {
     ${row("<b>Net ciro</b>", tl(st.total))}
     ${row("Nakit", tl(st.cash) + (st.avCash ? ` <span class="muted">(${fmt(st.avCash)} ön ödeme dahil)</span>` : ""))}${row("Kart", tl(st.card) + (st.avCard ? ` <span class="muted">(${fmt(st.avCard)} ön ödeme dahil)</span>` : ""))}${row("Cari", tl(st.credit))}
     ${st.payCash || st.payCard ? row("Cari tahsilat (nakit / kart)", `${fmt(st.payCash)} / ${fmt(st.payCard)}`) : ""}
+    ${st.giderCash ? row("Kasadan ödemeler (ödeme planı)", "−" + tl(st.giderCash), 'style="color:var(--danger)"') : ""}
     ${row("Açılış nakdi (devir)", tl(st.cashStart))}
     ${row("<b>Kasada olması gereken nakit</b>", tl(st.expCash))}
     ${st.counted != null ? row("Sayılan nakit", tl(st.counted)) + row("<b>Kasa farkı</b>", (st.diff > 0 ? "+" : "") + tl(st.diff) + (Math.abs(st.diff) < 0.005 ? " ✓" : st.diff > 0 ? " (fazla)" : " (eksik)"), dc) : ""}
@@ -9605,12 +9617,12 @@ $("#yplD").onchange = renderPosLog;
 $("#yplCal").onclick = () => { if ($("#calPop")) return closeCal(); const f = $("#yplD").value || dayKey(), t = $("#yplT").value || f; openCal($("#yplCal"), {from: f, to: t, onPick: (a, b) => { $("#yplD").value = a; $("#yplT").value = b; renderPosLog(); }}); }; $("#yplS").onchange = renderPosLog;
 $("#yprCats").addEventListener("change", e => {
   const tr = e.target.closest("tr[data-c]"), k = e.target.dataset.k; if (!tr || !k) return; const id = tr.dataset.c;
-  savePricing(c => { const x = Object.assign({}, c.cats[id] || {}); if (k === "m") { const v = pnum(e.target.value); x.m = v > 0 ? Math.min(v, 1000) : null; } else if (k === "r") x.r = e.target.value; else if (k === "fixed") x.fixed = e.target.checked; c.cats[id] = x; });
+  savePricing(c => { const x = Object.assign({}, c.cats[id] || {}); if (k === "m") { const v = pnum(e.target.value); x.m = v > 0 ? Math.min(v, 1000) : null; } else if (k === "r") x.r = e.target.value; else if (k === "fixed") { x.fixed = e.target.checked; if (x.fixed) x.auto = false; } else if (k === "auto") x.auto = e.target.checked; c.cats[id] = x; });
+  if (k === "auto") { const nm = id === "_none" ? "Kategorisiz" : catName(id); toast(e.target.checked ? `${nm}: otomatik fiyat açıldı — alış fiyatı değişince satış fiyatı güncellenecek` : `${nm}: otomatik fiyat kapatıldı`, "ok"); }
   renderPricing();
 });
 $("#yprCats").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.dataset.k === "m") { e.preventDefault(); e.target.blur(); } });
 $("#yprUp").onchange = e => { savePricing(c => { c.onlyUp = e.target.checked; }); renderPricing(); };
-$("#yprAuto").onchange = e => { savePricing(c => { c.auto = e.target.checked; }); toast(e.target.checked ? "Alış fiyatı değişince satış fiyatı otomatik güncellenecek" : "Otomatik fiyat güncelleme kapatıldı", "ok"); };
 $("#yprSugg").onclick = () => {
   let n = 0;
   savePricing(c => { for (const k of S.cats.map(x => x.id).concat(["_none"])) { const cur = c.cats[k] || {}; if (cur.m > 0 || cur.fixed) continue; const nm = norm(k === "_none" ? "" : catName(k)); const hit = PR_SUGG.find(([re]) => re.test(nm)); const sug = hit ? hit[1] : {m: 25}; c.cats[k] = Object.assign({r: "0.5"}, cur, sug); n++; } });
@@ -11057,32 +11069,40 @@ function planPayModal(x) {
       <div class="f2"><div class="fl"><label>Tutar (planlanan ${tl(x.amount)})</label><input id="ppA" class="big" inputmode="decimal" value="${fmt(x.amount)}" autofocus></div>
         <div class="fl"><label>Ödeme şekli</label><select id="ppM">${Object.entries(PLM).filter(([k]) => k !== "cek" && k !== "senet").map(([k, v]) => `<option value="${k}" ${(x.method && x.method !== "cek" && x.method !== "senet" ? x.method : "kart") === k ? "selected" : ""}>${v}</option>`).join("")}</select></div></div>
       <div class="f2"><div class="fl"><label>Tarih</label><input type="date" id="ppD" value="${calDay()}"></div><div class="fl"><label>Not (isteğe bağlı)</label><input id="ppN" placeholder="Dekont no vb."></div></div>
+      <div id="ppKW">${perOpen() ? `<label style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox" id="ppK" style="width:auto" checked> <b>Kasadaki nakitten ödendi</b> <span class="muted">(açık periyodun kasa nakdinden düşülür)</span></label>` : `<div class="muted" style="font-size:12px">Periyot kapalı olduğu için nakit ödeme kasadan düşülemez; yalnızca ödeme planına işlenir.</div>`}</div>
       ${sp ? `<label style="display:flex;gap:8px;align-items:center;font-size:13px"><input type="checkbox" id="ppAP" style="width:auto" ${x.applyParty !== false ? "checked" : ""}> <b>${esc(sp.name)}</b> hesabına işlensin (borç ${tl(sp.balance || 0)})</label>` : ""}
       ${x.repeat ? `<div class="muted" style="font-size:12px">Tekrarlı plan: ${x.repeat === "haftalik" ? "gelecek hafta" : "gelecek ay"} için yeni satır otomatik açılır.</div>` : ""}
     </div>
     <footer><button class="btn" data-close>Vazgeç</button><button class="btn grn" id="ppOk">Ödendi (Enter)</button></footer>`);
+  const kw = () => { $("#ppKW").hidden = $("#ppM").value !== "nakit"; }; $("#ppM").onchange = kw; kw();
   const go = async () => {
     const a = r2(pnum($("#ppA").value)); if (!(a > 0)) return toast("Tutar girin", "err");
     const m = $("#ppM").value, note = $("#ppN").value.trim(), day = $("#ppD").value || calDay(), ts = new Date(day + "T12:00").getTime();
+    const fromKasa = m === "nakit" && perOpen() && !!($("#ppK") && $("#ppK").checked);
     closeModal();
     const p = {status: "odendi", paidAt: Date.now(), paidDay: day, paidAmt: a, paidMethod: m, paidNote: note, paidBy: curUser() ? curUser().name : null};
     try {
       if (sp && $("#ppAP") && $("#ppAP").checked) { await bump("suppliers", sp.id, {balance: -a, paidTotal: a}); await addPartyMove("s", sp.id, {t: "odeme", ts, amt: a, method: m, desc: `Ödeme planı: ${x.title} (${PLM[m]})${note ? " – " + note : ""}`, ref: x.id}); p.partyApplied = true; }
+      if (fromKasa) {   // açık periyodun kasa nakdinden düş (gün sonu / kasa kapanışında "Kasadan ödemeler")
+        const kid = rid(); await store.appendDay("payments", {id: kid, ts: Date.now(), gider: true, planRef: x.id, method: "nakit", amt: -a, cname: x.partyName || (sp ? sp.name : "") || x.title, desc: `Ödeme planı: ${x.title}${note ? " – " + note : ""}`});
+        p.kasaPay = {id: kid, amt: a, day: dayKey(), per: PER ? PER.no : null};
+      } else p.kasaPay = null;
       Object.assign(x, p); await ystore.patch("payplan", x.id, p);
-      plog("ödeme-planı", `ödendi: ${x.title} · ${fmt(a)} · ${PLM[m]}${sp ? " · " + sp.name : ""}`);
-      if (x.repeat) { const nx = Object.assign({}, x, {id: "pl" + rid().slice(0, 8), due: x.repeat === "haftalik" ? addDays(x.due, 7) : addMonths(x.due, 1), status: "bekliyor", createdAt: Date.now()}); for (const k of ["paidAt", "paidDay", "paidAmt", "paidMethod", "paidNote", "paidBy", "partyApplied", "nextId"]) delete nx[k]; Y.plan.set(nx.id, nx); await ystore.put("payplan", nx); x.nextId = nx.id; await ystore.patch("payplan", x.id, {nextId: nx.id}); }
-      toast(`${x.title}: ${tl(a)} ödendi olarak işaretlendi`, "ok");
+      plog("ödeme-planı", `ödendi: ${x.title}${fromKasa ? " · kasadan" : ""} · ${fmt(a)} · ${PLM[m]}${sp ? " · " + sp.name : ""}`);
+      if (x.repeat) { const nx = Object.assign({}, x, {id: "pl" + rid().slice(0, 8), due: x.repeat === "haftalik" ? addDays(x.due, 7) : addMonths(x.due, 1), status: "bekliyor", createdAt: Date.now()}); for (const k of ["paidAt", "paidDay", "paidAmt", "paidMethod", "paidNote", "paidBy", "partyApplied", "nextId", "kasaPay"]) delete nx[k]; Y.plan.set(nx.id, nx); await ystore.put("payplan", nx); x.nextId = nx.id; await ystore.patch("payplan", x.id, {nextId: nx.id}); }
+      toast(`${x.title}: ${tl(a)} ödendi olarak işaretlendi${fromKasa ? " · kasadaki nakitten düşüldü" : ""}`, "ok");
     } catch(e) { dbErr(e); }
     renderPlan();
   };
   $("#ppOk").onclick = go; $("#ppA").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); go(); } };
 }
 async function planUndo(x) {
-  if (!confirm(`"${x.title}" ödemesi geri alınsın mı? ${x.partyApplied ? "Tedarikçi hesabına işlenen ödeme de geri alınır." : ""}`)) return;
+  if (!confirm(`"${x.title}" ödemesi geri alınsın mı? ${x.partyApplied ? "Tedarikçi hesabına işlenen ödeme de geri alınır." : ""}${x.kasaPay ? ` Kasadan düşülen ${fmt(x.kasaPay.amt)} ₺ kasaya geri eklenir.` : ""}`)) return;
   try {
+    if (x.kasaPay && +x.kasaPay.amt > 0) await store.appendDay("payments", {id: rid(), ts: Date.now(), gider: true, planRef: x.id, method: "nakit", amt: +x.kasaPay.amt, cname: x.partyName || x.title, desc: `Ödeme planı geri alındı: ${x.title}`});
     if (x.partyApplied && x.party && Y.sup.get(x.party)) { await bump("suppliers", x.party, {balance: +x.paidAmt, paidTotal: -x.paidAmt}); await delPartyMovesByRef("s", x.party, x.id); }
     if (x.nextId) { const nx = Y.plan.get(x.nextId); if (nx && nx.status !== "odendi") { await ystore.del("payplan", nx.id); Y.plan.delete(nx.id); } }
-    const p = {status: "bekliyor", paidAt: null, paidDay: null, paidAmt: null, paidMethod: null, paidNote: null, paidBy: null, partyApplied: false, nextId: null};
+    const p = {status: "bekliyor", paidAt: null, paidDay: null, paidAmt: null, paidMethod: null, paidNote: null, paidBy: null, partyApplied: false, nextId: null, kasaPay: null};
     Object.assign(x, p); await ystore.patch("payplan", x.id, p); plog("ödeme-planı", `ödeme geri alındı: ${x.title}`); toast("Geri alındı", "ok");
   } catch(e) { dbErr(e); }
   renderPlan();
@@ -11269,6 +11289,8 @@ if (mWant()) setTimeout(mEnter, 0);
    Demo: anahtarsız ilk 15 gün; sınırlı. Tam lisans: bitişten sonra 7 gün esneme, sonra satış ekranı kilitlenir (Yönetim açık kalır). */
 const LIC_PUB = {kty: "EC", crv: "P-256", x: "0CeZei5ETu-ug5Az01LlzB-bH2NH-r0Ft4zDmUy8tZQ", y: "VHlbdEizmTtGkEejWgOQf0uyD-aSvYYcHUioz55l2Nc"};
 const LIC = {DEMO_DAYS: 15, GRACE: 7, LIM: {urun: 100, fis: 200, cari: 20, ted: 20}, REP_DAYS: 7, key: null, pay: null, mode: "demo", locked: false, lockMsg: "", left: 0, bad: "", warned: false};
+const REV_URL = "https://raw.githubusercontent.com/emrecancengiz/enex-guncelleme/main/iptal.json";
+const revLocal = () => { try { const v = JSON.parse(lsGet("enex_rev") || "null"); return v && typeof v.n === "number" ? v : null; } catch(e) { return null; } };
 const LIC_BLOCKED = {yei: "Gelen e-Faturalar", yeo: "Gönderilen e-Faturalar", yez: "Entegratör ve Eşleşmeler", ypd: "POS Cihazları", ypi: "POS Entegrasyonu", ypl: "POS İşlemleri", ysc: "Terazi Entegrasyonu", ytg: "Teraziye Ürün Gönder"};
 /* Ek ücretli modüller: anahtardaki mod listesinde yoksa kapalı (demo'da hepsi kapalı) */
 const LIC_MODS = {pos: "POS / ÖKC entegrasyonu", ebelge: "e-Belge (e-Fatura / e-Arşiv)", terazi: "Terazi entegrasyonu"};
@@ -11328,8 +11350,31 @@ async function licSync() {
   const db = await licDbGet() || {}, lf = lsGet("enex_first"), ls = +lsGet("enex_seen") || 0;
   const first = [lf, db.first].filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x || "")).sort()[0] || licToday(), seen = Math.max(ls, +db.seen || 0);
   if (first !== lf) lsSet("enex_first", first); if (seen !== ls) lsSet("enex_seen", String(seen));
-  if (first !== db.first || seen > (+db.seen || 0) + 3600e3) await licDbSet({first, seen, at: Date.now()});
+  const rl = revLocal(), rd = db.rev && typeof db.rev.n === "number" ? db.rev : null, rev = !rl ? rd : !rd ? rl : (rd.n > rl.n ? rd : rl);
+  if (rev && (!rl || rev.n !== rl.n)) lsSet("enex_rev", JSON.stringify(rev));
+  LIC.rev = !!(rev && rev.r);
+  if (first !== db.first || seen > (+db.seen || 0) + 3600e3 || (rev && (!rd || rev.n !== rd.n))) { const o = {first, seen, at: Date.now()}; if (rev) o.rev = rev; await licDbSet(o); }
 }
+/* --- Lisans iptali: üretici imzalı iptal listesi (iptal.json) güncelleme deposundan okunur ---
+   İmzalı metin: ENEX-REVOKE|n|tarih|makine kodları (sıralı, virgüllü). Daha küçük n'li (eski) liste kabul edilmez.
+   Bu bilgisayar listedeyse satış ekranı kilitlenir (süresi dolmuş lisans gibi); internet olmasa da kilit kalıcıdır. */
+async function licRevokeCheck() {
+  try {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 8000);
+    const r = await fetch(REV_URL + "?t=" + Date.now(), {cache: "no-store", signal: ctl.signal}).finally(() => clearTimeout(t)); if (!r.ok) return;
+    const m = await r.json(); if (!m || typeof m.n !== "number" || !Array.isArray(m.list)) return;
+    const list = m.list.map(String).sort();
+    const pk = await crypto.subtle.importKey("jwk", LIC_PUB, {name: "ECDSA", namedCurve: "P-256"}, false, ["verify"]);
+    const ok = await crypto.subtle.verify({name: "ECDSA", hash: "SHA-256"}, pk, b64u.dec(String(m.sig || "")), new TextEncoder().encode(`ENEX-REVOKE|${m.n}|${m.date}|${list.join(",")}`));
+    if (!ok) { try { plog("lisans", "iptal listesi imzası geçersiz — yok sayıldı"); } catch(e) {} return; }
+    const db = await licDbGet() || {}, cur = [revLocal(), db.rev].filter(x => x && typeof x.n === "number").sort((a, b) => b.n - a.n)[0];
+    if (cur && m.n <= cur.n) return;   // eski ya da aynı liste
+    const was = !!(cur && cur.r), now = list.includes(licMachine()), v = {n: m.n, r: now, at: Date.now()};
+    lsSet("enex_rev", JSON.stringify(v)); await licDbSet(Object.assign({}, db, {rev: v}));
+    if (was !== now) { try { plog("lisans", now ? `lisans üretici tarafından iptal edildi (liste #${m.n})` : `lisans iptali kaldırıldı (liste #${m.n})`); } catch(e) {} await licRefresh(); try { renderPeriod(); } catch(e) {} toast(now ? "Bu bilgisayarın lisansı üretici tarafından iptal edildi — satış ekranı kilitlendi." : "Lisans iptali kaldırıldı — satış ekranı açıldı.", now ? "err" : "ok"); }
+  } catch(e) {}
+}
+setTimeout(licRevokeCheck, 6000); setInterval(licRevokeCheck, 6 * 3600e3);
 async function licClockReset() {   // saat yanlışlıkla ileri alınıp düzeltildiyse: yönetici onayıyla "son görülen" zaman bugüne çekilir
   const now = Date.now(); lsSet("enex_seen", String(now)); const db = await licDbGet() || {}; await licDbSet(Object.assign({}, db, {seen: now, at: now}));
   plog("lisans", "saat kilidi yönetici onayıyla kaldırıldı (son görülen zaman bugüne çekildi)"); await licRefresh(); renderPeriod(); toast("Tarih kilidi kaldırıldı", "ok");
@@ -11350,7 +11395,8 @@ async function licRefresh() {
     LIC.locked = LIC.left < 0;
     LIC.lockMsg = LIC.locked ? "Deneme süresi doldu." : "";
   }
-  LIC.clock = false;
+  LIC.clock = false; LIC.revoked = false;
+  if (LIC.rev || (revLocal() || {}).r) { LIC.locked = true; LIC.revoked = true; LIC.lockMsg = "Bu bilgisayarın lisansı üretici tarafından iptal edildi. Üretici ile görüşün."; }
   if (!LIC.locked && licClockBad()) { LIC.locked = true; LIC.clock = true; LIC.lockMsg = "Bilgisayarın tarihi geri alınmış görünüyor. Tarih ve saati düzeltin; saat daha önce yanlışlıkla ileri alınmışsa yönetici aşağıdan kilidi kaldırabilir."; }
   document.body.classList.toggle("enex-demo", LIC.mode === "demo");
   try { S.rules = S.rules; } catch(e) {}
@@ -11361,7 +11407,7 @@ function licPill() {
   let el = $("#licPill");
   if (!el) { el = document.createElement("button"); el.id = "licPill"; el.className = "pospill"; el.style.cssText = "border:0;cursor:pointer"; el.onclick = () => goPage({app: "yon", view: "ylic"}); const ti = $(".topinfo"); if (ti) ti.insertBefore(el, $("#kasaNo")); else return; }
   let t = "", cls = "pospill";
-  if (LIC.locked) { t = LIC.clock ? "TARİH SORUNU" : licDemo() ? "DEMO · süre doldu" : "LİSANS DOLDU"; cls += " off"; el.style.background = "var(--danger)"; el.style.color = "#fff"; }
+  if (LIC.locked) { t = LIC.revoked ? "LİSANS İPTAL" : LIC.clock ? "TARİH SORUNU" : licDemo() ? "DEMO · süre doldu" : "LİSANS DOLDU"; cls += " off"; el.style.background = "var(--danger)"; el.style.color = "#fff"; }
   else if (licDemo()) { t = `DEMO SÜRÜM · ${LIC.left} gün`; el.style.background = "#d97706"; el.style.color = "#fff"; }
   else if (LIC.left < 0) { t = `Lisans doldu · ${LIC.GRACE + LIC.left} gün esneme`; el.style.background = "var(--danger)"; el.style.color = "#fff"; }
   else if (LIC.left <= 30) { t = `Lisans · ${LIC.left} gün kaldı`; el.style.background = LIC.left <= 7 ? "var(--danger)" : "#d97706"; el.style.color = "#fff"; }
@@ -11461,7 +11507,7 @@ licRefresh().then(() => { renderPeriod(); setTimeout(licWarnOnce, 2500); });
 setInterval(() => licRefresh(), 60000);
 
 /* =================== DESTEK: sürüm, destek menüsü, sorun bildirimi (tanı dosyası), açılış sağlık kontrolü =================== */
-const ENEX_VER = "1.6.0", ENEX_VER_DATE = "15.10.2026";   // sürüm: ANA.ARA.YAMA — büyük değişiklik ana, yeni özellik ara, küçük düzeltme yama numarasını artırır (Lisans Yöneticisi'nde sürüm takibi için)
+const ENEX_VER = "1.7.0", ENEX_VER_DATE = "16.10.2026";   // sürüm: ANA.ARA.YAMA — büyük değişiklik ana, yeni özellik ara, küçük düzeltme yama numarasını artırır (Lisans Yöneticisi'nde sürüm takibi için)
 const SUPPORT_DEF = {name: "Enex POS Destek", phone: ""};   // lisans anahtarı sp/sn taşıyorsa onlar kullanılır
 const supportInfo = () => ({name: (LIC.pay && LIC.pay.sn) || SUPPORT_DEF.name, phone: (LIC.pay && LIC.pay.sp) || SUPPORT_DEF.phone});
 const waNum = p => String(p || "").replace(/\D/g, "").replace(/^0/, "90");
@@ -11528,9 +11574,9 @@ function renderDestek() {
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
         ${sp.phone ? `<a class="btn pri" href="https://wa.me/${waNum(sp.phone)}?text=${waMsg}" target="_blank" rel="noopener">WhatsApp ile yaz</a>` : ""}
         <button class="btn" id="dsSorun">Sorun bildir (tanı dosyası)</button>
-        <a class="btn" href="anydesk:" id="dsAny" title="AnyDesk kuruluysa açar; 9 haneli adresi üreticiye okuyun">AnyDesk'i aç (uzaktan bağlantı)</a>
+        <button class="btn" type="button" id="dsAny" title="Alpemix'i açar; ekrandaki ID ve şifreyi üreticiye okuyun">Alpemix'i aç (uzaktan bağlantı)</button>
       </div>
-      <div class="muted" style="font-size:12px;margin-top:8px">Uzaktan bağlantı için AnyDesk kurulu olmalıdır (anydesk.com). Açılınca ekrandaki 9 haneli adresi üreticiye söyleyin; bağlantıyı siz onaylarsınız.</div></div>
+      <div class="muted" style="font-size:12px;margin-top:8px">Uzaktan bağlantı <b>Alpemix</b> ile yapılır. Düğmeye basınca Alpemix açılır; ekranda görünen <b>ID</b> ve <b>şifreyi</b> üreticiye söyleyin. İş bitince Alpemix'i kapatın; şifre her açılışta değişir.</div></div>
     <div class="box sec" style="max-width:860px;margin-top:10px"><h3>Program bilgileri</h3>
       <table class="tbl" style="max-width:560px"><tr><td>Sürüm</td><td><b>${ENEX_VER}</b> <span class="muted">(${ENEX_VER_DATE})</span></td></tr><tr><td>Makine kodu</td><td><code>${mc}</code></td></tr><tr><td>Kasa kodu</td><td>${esc(deviceId)}</td></tr><tr><td>Lisans</td><td>${LIC.pay ? `${esc(LIC.pay.c || "")} · bitiş ${dDate(LIC.pay.e)}` : `Demo · ${LIC.left} gün`}</td></tr><tr><td>Mühür</td><td><code>${(window.__enexSeal || "").slice(0, 12)}</code></td></tr></table></div>
     <div class="box sec" style="max-width:860px;margin-top:10px"><h3>Sağlık kontrolü <button class="btn sm" id="dsHc" style="margin-left:8px">Yeniden kontrol et</button></h3><div id="dsHcBody" class="muted">Kontrol ediliyor…</div></div>`;
@@ -11538,6 +11584,19 @@ function renderDestek() {
   const draw = () => { $("#dsHcBody").innerHTML = HEALTH.length ? `<table class="tbl" style="max-width:720px">${HEALTH.map(h => `<tr><td style="width:150px">${esc(h.t)}</td><td style="white-space:nowrap;color:${h.ok ? "var(--cash)" : "var(--danger)"}"><b>${h.ok ? "Sorun yok" : "Dikkat"}</b></td><td>${esc(h.d)}</td></tr>`).join("")}</table>` : "—"; };
   $("#dsHc").onclick = async () => { $("#dsHcBody").textContent = "Kontrol ediliyor…"; await healthCheck(); draw(); };
   healthCheck().then(draw);
+  if ($("#dsAny")) $("#dsAny").onclick = async () => {   // Enex Hizmet program klasöründeki Alpemix.exe'yi açar
+    const r = await hzFetch(HZ() + "/admin/alpemix", {method: "POST"}, 5000);
+    if (r.ok && r.j && r.j.ok) return toast("Alpemix açılıyor — ekrandaki ID ve şifreyi üreticiye okuyun", "ok");
+    const kl = (r.j && r.j.klasor) || decodeURIComponent(location.pathname).replace(/^\/+/, "").replace(/\/[^\/]*$/, "").replace(/\//g, "\\");
+    const hz = r.status !== 0;
+    openModal(`<header>Alpemix (uzaktan bağlantı)<button data-close>×</button></header><div class="mb" style="max-width:520px;font-size:14px;line-height:1.6">
+      ${hz ? `Bu bilgisayarda Alpemix bulunamadı. Bir kez şunu yapın:` : `Enex Hizmet'e ulaşılamadı (program yeni açıldıysa birkaç saniye sonra tekrar deneyin). Alpemix'i elle de açabilirsiniz:`}
+      <ol style="margin:8px 0 0 18px"><li><a href="https://www.alpemix.com/" target="_blank" rel="noopener"><b>alpemix.com</b></a> adresinden Alpemix'i indirin.</li>
+      <li>İnen <b>Alpemix.exe</b> dosyasını program klasörüne kopyalayın:<br><code style="user-select:all">${esc(kl)}</code></li>
+      <li>Bu düğmeye tekrar basın; bundan sonra Alpemix tek tıkla açılır.</li></ol>
+      <div class="muted" style="font-size:12px;margin-top:8px">Güvenlik için program yalnızca kendi klasöründeki Alpemix'i açar; İndirilenler klasöründen dosya çalıştırmaz.</div></div>
+      <footer><button class="btn" data-close>Kapat</button></footer>`);
+  };
 }
 {
   const _show2 = show; show = function(v) { _show2(v); if (v === "ydst") renderDestek(); };
@@ -12330,7 +12389,7 @@ async function renderKlg() {
 }
 })();
 </script>
-<script>window.__enexSeal="5f28cf69741077fb927a5b9c4c017bf3790b2afb94da5ee74415f90db6e36f1f";</script>
+<script>window.__enexSeal="5aae106b2f4b062837237e55207a0ad82d7bdf62667747919f493c472118fd65";</script>
 
 <script>
 /* satış ekranı açıkken sayfa kaymasın: body.salefit (CSS :has gerektirmez) */

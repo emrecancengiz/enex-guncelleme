@@ -1,5 +1,8 @@
 ﻿# Enex POS baslatici (gizli pencere): programi acar, kapaninca "yedek alinsin mi?" diye sorar
-$base = "C:\dev\enex_pos_web"
+$base = Split-Path -Parent $MyInvocation.MyCommand.Path   # programin kurulu oldugu klasor (C:\EnexPOS, C:\dev\EnexPOS\Program ...)
+if (-not $base -or -not (Test-Path (Join-Path $base "index.html"))) { $base = "C:\dev\EnexPOS\Program" }
+$indexUrl = ([Uri](Join-Path $base "index.html")).AbsoluteUri
+$profilYol = (Join-Path $base "profil")
 # Tek ornek: baslatici zaten calisiyorsa (cift tiklama) calisan kasayi kapatma; mevcut pencereyi one getir
 $log = "$base\baslat.log"
 function Kayit($m) { try { Add-Content -Path $log -Value ("{0} [{1}] {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"), $PID, $m) } catch {} }
@@ -85,7 +88,7 @@ if (Test-Path "$base\enex-hizmet.ps1") {
 }
 
 # Bu profili kullanan tarayici surecleri (pencere kapansa da arka planda kalabilir)
-function Enex-Surecler { Get-CimInstance Win32_Process -Filter "Name='msedge.exe' OR Name='chrome.exe'" | Where-Object { $_.CommandLine -like "*enex_pos_web\profil*" } }
+function Enex-Surecler { Get-CimInstance Win32_Process -Filter "Name='msedge.exe' OR Name='chrome.exe'" | Where-Object { $_.CommandLine -and $_.CommandLine.IndexOf($profilYol, [StringComparison]::OrdinalIgnoreCase) -ge 0 } }
 # Nazik kapanis: once pencereye kapan de (veriler diske yazilsin), 5 sn sonra kalan varsa zorla
 function Enex-Kapat {
   Enex-Surecler | ForEach-Object { try { (Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue).CloseMainWindow() | Out-Null } catch {} }
@@ -152,7 +155,7 @@ Enex-Surecler | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorActi
 Start-Sleep -Milliseconds 500
 
 # 1) Programi ac ve kapanana kadar bekle
-Start-Process -FilePath $edge -ArgumentList "--app=`"file:///C:/dev/enex_pos_web/index.html`" --start-maximized $ortak"
+Start-Process -FilePath $edge -ArgumentList "--app=`"$indexUrl`" --start-maximized $ortak"
 $sonuc = Enex-Bekle
 
 # 2) X ile kapatildiysa programi yeniden ac; yedek penceresi (Kapat dugmesindekiyle ayni) kendiliginden gelir.
@@ -161,7 +164,7 @@ $deneme = 0
 while ($sonuc -eq "x" -and $deneme -lt 3) {
   $deneme++
   Kayit "Yedek penceresiyle yeniden aciliyor ($deneme)"
-  Start-Process -FilePath $edge -ArgumentList "--app=`"file:///C:/dev/enex_pos_web/index.html?yedek=1`" --start-maximized $ortak"
+  Start-Process -FilePath $edge -ArgumentList "--app=`"$($indexUrl)?yedek=1`" --start-maximized $ortak"
   $sonuc = Enex-Bekle
 }
 Start-Sleep -Seconds 3
