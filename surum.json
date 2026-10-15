@@ -1,0 +1,23 @@
+{
+ "ver": "1.6.0",
+ "date": "2026-10-15",
+ "notes": "deneme",
+ "files": [
+  {
+   "n": "enex-baslat.ps1",
+   "sha256": "db5793b2bca6d956b9dbfbaf71e2d58baafd23e4438c39aabc8955dcc05039b3",
+   "size": 11439
+  },
+  {
+   "n": "enex-guncelleme.ps1",
+   "sha256": "70c4d0931c094b3984ac5755a671c41a02c00a3964333c8eade1fb86da5735a4",
+   "size": 6634
+  },
+  {
+   "n": "index.html",
+   "sha256": "17cac8f6febfa027f784a74a6a4a54e5e606a149cbf81c9c6d821d08402a6ade",
+   "size": 1398058
+  }
+ ],
+ "sig": "yO4pbvhaQ7m3TNg96eR2gOelMDsr4DKkvC8VPxrSaLMXcnUdVs_HPB6NYGhSlSVExrdl4PsXoWZjK4C-j9zlPQ"
+}
